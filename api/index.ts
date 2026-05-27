@@ -375,7 +375,7 @@ app.post('/api/analyze', async (req, res) => {
 
 // API: Proxy Google Sheets CSV (CORS 우회 + 리다이렉트 수동 처리)
 app.get('/api/sheets-proxy', async (req, res) => {
-  const SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1US-Pv5FrUOpGp86SVp9ex-LEJS_ecNy5srET5BufZ0Y/export?format=csv&gid=182726782';
+  const SHEETS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRuvBv1gvCWvpTEQgd-wRkKHO1srJDN1G1gG53STLDVcpePxIeNLL6ahEX2iTq8dC0_3EdQmjRnIZi-/pub?output=csv';
   try {
     const csvText = await fetchText(SHEETS_URL);
     if (csvText.trim().startsWith('<!') || csvText.trim().startsWith('<html')) {
