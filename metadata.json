@@ -1,0 +1,6 @@
+{
+  "name": "Gallup Q12 Survey & Analytics",
+  "description": "직원들의 몰입도를 측정하는 갤럽 Q12 설문조사 및 부서별 통계 분석, Gemini 기반 AI 피드백 레포트 제공 시스템",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
