@@ -25,6 +25,26 @@ interface SheetRow {
   comment2: string;
 }
 
+// ── 직급 3그룹 정규화 ─────────────────────────────────────────
+// 그룹: 사원~주임 | 대리~과장 | 차장 이상
+// Google Sheets 데이터: 사원~주임(SM1~SM3), 대리(SM4), 과장이상(SM5이상) → 대리~과장
+// 구형 데이터: 사원~주임(JM·plain) → 사원~주임
+const RANK_GROUPS = ['사원~주임', '대리~과장', '차장 이상'];
+
+function normalizeRank(raw: string): string {
+  const r = (raw || '').trim();
+  if (!r || r === '-') return '';
+  // 차장 이상
+  if (r.includes('차장') || r.includes('부장') || r.includes('임원')) return '차장 이상';
+  // SM 레인지 (SM1~SM5) + 대리·과장 표기 → 대리~과장
+  if (r.includes('SM1') || r.includes('SM2') || r.includes('SM3') ||
+      r.includes('SM4') || r.includes('SM5') ||
+      r.includes('대리') || r.includes('과장')) return '대리~과장';
+  // JM 레인지 / plain 사원·주임 → 사원~주임
+  if (r.includes('사원') || r.includes('주임') || r.includes('JM')) return '사원~주임';
+  return '';
+}
+
 // ── 구글 시트 CSV 파서 ────────────────────────────────────────
 function parseSheetCSV(text: string): SheetRow[] {
   const lines: string[][] = [];
@@ -64,13 +84,14 @@ function parseSheetCSV(text: string): SheetRow[] {
     }
     if (!hasScore) return acc;
 
+    const normRank = normalizeRank(r[7] || '');
     acc.push({
       year: yearNum,
       bu: r[2] || '기타',
       onsite: r[3] || '',
       brand: r[4] || '',
       role: r[6] || '팀원',
-      rank: r[7] || '',
+      rank: normRank,
       job: r[8] || '',
       answers,
       comment1: r[36] || '',
@@ -275,14 +296,15 @@ export default function AdminDashboard({ lastUpdated }: AdminDashboardProps) {
   // 사용 가능한 옵션
   const availYears = [...new Set(rows.map(r => String(r.year)))].sort();
   const availBus = [...new Set(rows.map(r => r.bu))].filter(Boolean).sort();
-  const availRanks = [...new Set(rows.map(r => r.rank))].filter(Boolean).sort();
+  // 직급: 고정 3그룹 순서, 데이터에 존재하는 것만
+  const availRanks = RANK_GROUPS.filter(g => rows.some(r => r.rank === g));
   const availRoles = [...new Set(rows.map(r => r.role))].filter(Boolean).sort();
 
   // 데이터 로드 시 전체 선택으로 초기화
   const initFilters = (data: SheetRow[]) => {
     setSelYears(new Set(data.map(r => String(r.year))));
     setSelBus(new Set(data.map(r => r.bu).filter(Boolean)));
-    setSelRanks(new Set(data.map(r => r.rank).filter(Boolean)));
+    setSelRanks(new Set(RANK_GROUPS.filter(g => data.some(r => r.rank === g))));
     setSelRoles(new Set(data.map(r => r.role).filter(Boolean)));
   };
 
@@ -335,11 +357,14 @@ export default function AdminDashboard({ lastUpdated }: AdminDashboardProps) {
   })();
 
   const rankCards: CardData[] = (() => {
-    const ranks = [...new Set(filtered.map(r => r.rank))].filter(Boolean).sort();
-    return ranks.map(rk => {
-      const curr = filtered.filter(r => r.rank === rk);
-      return buildCard(rk, `n=${curr.length}`, curr);
-    });
+    // 고정 3그룹 순서: 사원~주임 → 대리~과장 → 차장 이상
+    return RANK_GROUPS
+      .map(rk => {
+        const curr = filtered.filter(r => r.rank === rk);
+        if (curr.length === 0) return null;
+        return buildCard(rk, `n=${curr.length}명`, curr);
+      })
+      .filter(Boolean) as CardData[];
   })();
 
   const tabCards = activeTab === 'timeline' ? timelineCards : activeTab === 'org' ? orgCards : rankCards;
