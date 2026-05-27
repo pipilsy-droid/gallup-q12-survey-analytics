@@ -337,4 +337,20 @@ app.post('/api/analyze', async (req, res) => {
   }
 });
 
+// API: Proxy Google Sheets CSV (CORS 우회)
+app.get('/api/sheets-proxy', async (req, res) => {
+  const SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1US-Pv5FrUOpGp86SVp9ex-LEJS_ecNy5srET5BufZ0Y/export?format=csv&gid=182726782';
+  try {
+    const response = await fetch(SHEETS_URL);
+    if (!response.ok) {
+      return res.status(502).json({ error: '구글 시트에서 데이터를 가져오지 못했습니다. 시트가 공개 공유 설정인지 확인해주세요.' });
+    }
+    const csvText = await response.text();
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.send(csvText);
+  } catch (err: any) {
+    res.status(500).json({ error: `구글 시트 연동 오류: ${err.message}` });
+  }
+});
+
 export default app;
