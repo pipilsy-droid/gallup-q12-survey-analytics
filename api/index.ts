@@ -1,6 +1,42 @@
 import express from 'express';
+import https from 'https';
+import http from 'http';
+import { URL } from 'url';
 import { GoogleGenAI } from '@google/genai';
 import { SurveySubmission, GALLUP_Q12_QUESTIONS, getBuFromDepartment } from '../src/types';
+
+// 리다이렉트 수동 처리 fetch (Google Sheets CORS/auth 우회)
+function fetchText(urlStr: string, maxRedirects = 8): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const parsed = new URL(urlStr);
+    const lib = parsed.protocol === 'https:' ? https : http;
+    const options = {
+      hostname: parsed.hostname,
+      path: parsed.pathname + parsed.search,
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/csv,text/plain,*/*;q=0.9',
+        'Accept-Language': 'ko-KR,ko;q=0.9',
+        'Cache-Control': 'no-cache',
+      },
+    };
+    const req = lib.request(options, (res) => {
+      const loc = res.headers['location'];
+      if ((res.statusCode === 301 || res.statusCode === 302 || res.statusCode === 303 || res.statusCode === 307) && loc) {
+        if (maxRedirects === 0) return reject(new Error('리다이렉트가 너무 많습니다'));
+        const nextUrl = loc.startsWith('http') ? loc : `${parsed.protocol}//${parsed.hostname}${loc}`;
+        return fetchText(nextUrl, maxRedirects - 1).then(resolve).catch(reject);
+      }
+      if (res.statusCode !== 200) return reject(new Error(`HTTP ${res.statusCode}`));
+      const chunks: Buffer[] = [];
+      res.on('data', (chunk) => chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)));
+      res.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
+    });
+    req.on('error', reject);
+    req.end();
+  });
+}
 
 const app = express();
 app.use(express.json());
@@ -337,16 +373,16 @@ app.post('/api/analyze', async (req, res) => {
   }
 });
 
-// API: Proxy Google Sheets CSV (CORS 우회)
+// API: Proxy Google Sheets CSV (CORS 우회 + 리다이렉트 수동 처리)
 app.get('/api/sheets-proxy', async (req, res) => {
   const SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1US-Pv5FrUOpGp86SVp9ex-LEJS_ecNy5srET5BufZ0Y/export?format=csv&gid=182726782';
   try {
-    const response = await fetch(SHEETS_URL);
-    if (!response.ok) {
-      return res.status(502).json({ error: '구글 시트에서 데이터를 가져오지 못했습니다. 시트가 공개 공유 설정인지 확인해주세요.' });
+    const csvText = await fetchText(SHEETS_URL);
+    if (csvText.trim().startsWith('<!') || csvText.trim().startsWith('<html')) {
+      return res.status(502).json({ error: '구글 시트가 공개 공유 설정이 아닙니다. 시트 → 공유 → "링크가 있는 모든 사용자" 로 변경해주세요.' });
     }
-    const csvText = await response.text();
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.send(csvText);
   } catch (err: any) {
     res.status(500).json({ error: `구글 시트 연동 오류: ${err.message}` });
