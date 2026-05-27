@@ -25,6 +25,31 @@ interface SheetRow {
   comment2: string;
 }
 
+// ── 소속 BU 정규화 ────────────────────────────────────────────
+// 순서: 캐주얼BU → 여성BU → 스포츠BU → 온라인BU → 지원부서 → 기타
+const BU_GROUPS = ['캐주얼BU', '여성BU', '스포츠BU', '온라인BU', '지원부서', '기타'];
+
+function normalizeBu(raw: string): string {
+  const r = (raw || '').trim();
+  if (r === '캐주얼BU') return '캐주얼BU';
+  if (r === '여성BU') return '여성BU';
+  if (r === '스포츠BU') return '스포츠BU';
+  if (r === '온라인BU') return '온라인BU';
+  if (r === '지원부서') return '지원부서';
+  return '기타'; // -, 기타, 빈값 등 모두 기타
+}
+
+// ── 직책 2그룹 정규화 ─────────────────────────────────────────
+// 팀원(기본) | 팀장 이상
+const ROLE_GROUPS = ['팀원', '팀장 이상'];
+
+function normalizeRole(raw: string): string {
+  const r = (raw || '').trim();
+  if (r.includes('팀장') || r.includes('점장') || r.includes('부점장') ||
+      r.includes('브랜드장') || r.includes('부서장') || r.includes('실장')) return '팀장 이상';
+  return '팀원'; // 팀원, -, 빈값 모두 팀원
+}
+
 // ── 직급 3그룹 정규화 ─────────────────────────────────────────
 // 그룹: 사원~주임 | 대리~과장 | 차장 이상
 // Google Sheets 데이터: 사원~주임(SM1~SM3), 대리(SM4), 과장이상(SM5이상) → 대리~과장
@@ -87,10 +112,10 @@ function parseSheetCSV(text: string): SheetRow[] {
     const normRank = normalizeRank(r[7] || '');
     acc.push({
       year: yearNum,
-      bu: r[2] || '기타',
+      bu: normalizeBu(r[2] || ''),
       onsite: r[3] || '',
       brand: r[4] || '',
-      role: r[6] || '팀원',
+      role: normalizeRole(r[6] || ''),
       rank: normRank,
       job: r[8] || '',
       answers,
@@ -293,19 +318,18 @@ export default function AdminDashboard({ lastUpdated }: AdminDashboardProps) {
   const [selRanks, setSelRanks] = useState<Set<string>>(new Set());
   const [selRoles, setSelRoles] = useState<Set<string>>(new Set());
 
-  // 사용 가능한 옵션
+  // 사용 가능한 옵션 — 고정 그룹 순서 유지, 데이터에 존재하는 것만
   const availYears = [...new Set(rows.map(r => String(r.year)))].sort();
-  const availBus = [...new Set(rows.map(r => r.bu))].filter(Boolean).sort();
-  // 직급: 고정 3그룹 순서, 데이터에 존재하는 것만
+  const availBus = BU_GROUPS.filter(g => rows.some(r => r.bu === g));
   const availRanks = RANK_GROUPS.filter(g => rows.some(r => r.rank === g));
-  const availRoles = [...new Set(rows.map(r => r.role))].filter(Boolean).sort();
+  const availRoles = ROLE_GROUPS.filter(g => rows.some(r => r.role === g));
 
   // 데이터 로드 시 전체 선택으로 초기화
   const initFilters = (data: SheetRow[]) => {
     setSelYears(new Set(data.map(r => String(r.year))));
-    setSelBus(new Set(data.map(r => r.bu).filter(Boolean)));
+    setSelBus(new Set(BU_GROUPS.filter(g => data.some(r => r.bu === g))));
     setSelRanks(new Set(RANK_GROUPS.filter(g => data.some(r => r.rank === g))));
-    setSelRoles(new Set(data.map(r => r.role).filter(Boolean)));
+    setSelRoles(new Set(ROLE_GROUPS.filter(g => data.some(r => r.role === g))));
   };
 
   // 구글 시트 동기화
@@ -349,11 +373,14 @@ export default function AdminDashboard({ lastUpdated }: AdminDashboardProps) {
   })();
 
   const orgCards: CardData[] = (() => {
-    const bus = [...new Set(filtered.map(r => r.bu))].filter(Boolean).sort();
-    return bus.map(bu => {
-      const curr = filtered.filter(r => r.bu === bu);
-      return buildCard(bu, `n=${curr.length}`, curr);
-    });
+    // 고정 순서: 캐주얼BU → 여성BU → 스포츠BU → 온라인BU → 지원부서 → 기타
+    return BU_GROUPS
+      .map(bu => {
+        const curr = filtered.filter(r => r.bu === bu);
+        if (curr.length === 0) return null;
+        return buildCard(bu, `n=${curr.length}명`, curr);
+      })
+      .filter(Boolean) as CardData[];
   })();
 
   const rankCards: CardData[] = (() => {
