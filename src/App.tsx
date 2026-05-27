@@ -6,12 +6,13 @@
 import React, { useState } from 'react';
 import SurveyWizard from './components/SurveyWizard';
 import AdminDashboard from './components/AdminDashboard';
-import { ClipboardCheck, LayoutDashboard, Shield, AlertCircle, HelpCircle } from 'lucide-react';
+import GallupGuide from './components/GallupGuide';
+import { ClipboardCheck, LayoutDashboard, Shield, AlertCircle, HelpCircle, BookOpen } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function App() {
-  // Navigation tabs: 'survey' | 'admin'
-  const [activeTab, setActiveTab] = useState<'survey' | 'admin'>('survey');
+  // Navigation tabs: 'survey' | 'admin' | 'guide'
+  const [activeTab, setActiveTab] = useState<'survey' | 'admin' | 'guide'>('survey');
   const [lastUpdated, setLastUpdated] = useState<number>(Date.now());
 
   const handleSurveySubmitted = () => {
@@ -64,6 +65,18 @@ export default function App() {
               <LayoutDashboard size={14} className={activeTab === 'admin' ? 'text-indigo-600' : ''} />
               <span>결과 분석실</span>
             </button>
+            <button
+              onClick={() => setActiveTab('guide')}
+              className={`relative flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold leading-none rounded-lg transition-all ${
+                activeTab === 'guide'
+                  ? 'bg-white text-purple-900 shadow-xs'
+                  : 'text-neutral-500 hover:text-neutral-800'
+              }`}
+              id="tab-guide-trigger"
+            >
+              <BookOpen size={14} className={activeTab === 'guide' ? 'text-purple-600' : ''} />
+              <span>Q12 개념</span>
+            </button>
           </nav>
         </div>
       </header>
@@ -89,8 +102,10 @@ export default function App() {
         <div id="dynamic-workflow-mount-point">
           {activeTab === 'survey' ? (
             <SurveyWizard onSurveySubmitted={handleSurveySubmitted} />
-          ) : (
+          ) : activeTab === 'admin' ? (
             <AdminDashboard lastUpdated={lastUpdated} />
+          ) : (
+            <GallupGuide />
           )}
         </div>
       </main>
