@@ -147,10 +147,10 @@ export default function GallupGuide() {
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', flexWrap: 'wrap' }}>
             <div style={{ flex: 1, minWidth: '260px' }}>
               <div style={{ fontSize: '11px', color: '#7dd3fc', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
-                Q12 GALLUP 몰입도 이해 ①
+                Q12 몰입도 이해 ①
               </div>
               <h2 style={{ fontSize: '20px', fontWeight: 800, margin: '0 0 12px', lineHeight: 1.3 }}>
-                Gallup 몰입도란 무엇인가요?<br />왜 해야 하나요?
+                직원 몰입도란 무엇인가요?<br />왜 해야 하나요?
               </h2>
               <p style={{ fontSize: '13px', color: '#cbd5e1', lineHeight: 1.7, margin: 0 }}>
                 <strong style={{ color: 'white' }}>12가지 성과와 직결되는 질문</strong>을 통해 직원의 몰입도를 조사합니다.<br />
@@ -178,7 +178,7 @@ export default function GallupGuide() {
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.05 }}>
         <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px 28px' }}>
           <div style={{ fontSize: '11px', color: '#6366f1', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '6px' }}>
-            Q12 GALLUP 몰입도 이해 ②
+            Q12 몰입도 이해 ②
           </div>
           <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: '0 0 6px' }}>몰입도 12가지 질문 구조</h3>
           <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 20px', lineHeight: 1.6 }}>
@@ -246,7 +246,7 @@ export default function GallupGuide() {
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }}>
         <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px 28px' }}>
           <div style={{ fontSize: '11px', color: '#6366f1', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '6px' }}>
-            Q12 GALLUP 몰입도 이해 ③
+            Q12 몰입도 이해 ③
           </div>
           <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: '0 0 16px' }}>
             몰입도 12가지 요소 상세
@@ -342,7 +342,107 @@ export default function GallupGuide() {
         </div>
       </motion.div>
 
-      {/* ── 섹션 5: 핵심 드라이버 ────────────────────────────────── */}
+      {/* ── 섹션 5: 글로벌 & 동아시아 벤치마크 ─────────────────── */}
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.18 }}>
+        <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px 28px' }}>
+          <div style={{ fontSize: '11px', color: '#e11d48', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '6px' }}>
+            글로벌 & 동아시아 · Korea 벤치마크 (2026 기준)
+          </div>
+          <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0f172a', margin: '0 0 6px' }}>직원 몰입도 글로벌 현황</h3>
+          <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 20px', lineHeight: 1.65 }}>
+            2026 State of the Global Workplace 조사 결과를 바탕으로 한 글로벌·동아시아 직원 몰입도 현황입니다.
+            이랜드패션의 현재 수준을 글로벌 맥락에서 비교할 수 있습니다.
+          </p>
+
+          {/* 핵심 수치 카드 */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px', marginBottom: '20px' }}>
+            {[
+              { region: '🌍 글로벌', label: '적극몰입', value: '23%', sub: '전년 대비 -1%p', color: '#10b981', bg: '#f0fdf4' },
+              { region: '🌏 동아시아', label: '적극몰입', value: '18%', sub: '글로벌 최하위권', color: '#f59e0b', bg: '#fffbeb' },
+              { region: '🇰🇷 한국', label: '적극몰입', value: '12%', sub: '아시아 평균 하회', color: '#ef4444', bg: '#fff1f2' },
+              { region: '🌍 글로벌', label: '적극비몰입', value: '15%', sub: '매년 증가 추세', color: '#6366f1', bg: '#eef2ff' },
+              { region: '🌍 관리자', label: '적극몰입', value: '24%', sub: 'IC 대비 +11%p', color: '#0d9488', bg: '#f0fdfa' },
+              { region: '🌍 일반직원', label: '적극몰입', value: '13%', sub: '관리자 대비 낮음', color: '#8b5cf6', bg: '#faf5ff' },
+            ].map(item => (
+              <div key={`${item.region}-${item.label}`} style={{ background: item.bg, borderRadius: '12px', padding: '14px 16px', border: `1px solid ${item.color}33` }}>
+                <div style={{ fontSize: '10px', color: '#64748b', marginBottom: '4px', fontWeight: 600 }}>{item.region}</div>
+                <div style={{ fontSize: '11px', color: item.color, fontWeight: 700, marginBottom: '2px' }}>{item.label}</div>
+                <div style={{ fontSize: '28px', fontWeight: 900, color: item.color, lineHeight: 1.1 }}>{item.value}</div>
+                <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '4px' }}>{item.sub}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* 직급별 몰입도 차이 */}
+          <div style={{ background: '#f8fafc', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>📊 직급별 몰입도 격차 (글로벌)</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {[
+                { label: '관리자 (Manager)', pct: 24, color: '#0d9488' },
+                { label: '일반직원 (Individual Contributor)', pct: 13, color: '#8b5cf6' },
+                { label: '동아시아 전체 평균', pct: 18, color: '#f59e0b' },
+              ].map(item => (
+                <div key={item.label}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '11px', color: '#475569', fontWeight: 600 }}>{item.label}</span>
+                    <span style={{ fontSize: '12px', fontWeight: 800, color: item.color }}>{item.pct}%</span>
+                  </div>
+                  <div style={{ height: '8px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${item.pct}%`, background: item.color, borderRadius: '4px', transition: 'width 1s' }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p style={{ fontSize: '11px', color: '#64748b', margin: '12px 0 0', lineHeight: 1.65 }}>
+              💡 관리자의 몰입도가 일반직원보다 <strong>11%p</strong> 높습니다. 관리자 몰입도를 높이면 팀 전체 몰입도 향상에 직결됩니다.
+            </p>
+          </div>
+
+          {/* 동아시아 주요 이슈 */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '10px' }}>
+            {[
+              {
+                icon: '😔', title: '고독감 — 글로벌 최고',
+                desc: '동아시아 직원의 23%가 직장에서 극심한 고독감을 느낍니다. 이는 글로벌 최고 수준으로, 직원 유대감 강화 프로그램이 시급합니다.',
+                color: '#ef4444', bg: '#fff1f2',
+              },
+              {
+                icon: '🌱', title: '웰빙 번영 — 32%',
+                desc: '동아시아 직원 중 삶이 번성(thriving)하고 있다고 응답한 비율은 32%에 불과합니다. 직원의 전반적인 삶의 질 향상이 몰입도와 직결됩니다.',
+                color: '#f59e0b', bg: '#fffbeb',
+              },
+              {
+                icon: '💼', title: '스트레스 — 매일 경험',
+                desc: '동아시아 직원의 상당수가 매일 스트레스를 경험하며, 이직 의향과 강한 상관관계를 보입니다. 심리적 안전감 구축이 핵심 과제입니다.',
+                color: '#8b5cf6', bg: '#faf5ff',
+              },
+              {
+                icon: '🚀', title: '이직 의향 — 잠재적 유출',
+                desc: '비몰입·적극비몰입 직원은 적극몰입 직원 대비 이직 의향이 3~5배 높습니다. 몰입도 향상이 인재 유지의 핵심 레버입니다.',
+                color: '#6366f1', bg: '#eef2ff',
+              },
+            ].map(item => (
+              <div key={item.title} style={{ background: item.bg, borderRadius: '10px', padding: '14px 16px', border: `1px solid ${item.color}22` }}>
+                <div style={{ fontSize: '16px', marginBottom: '6px' }}>{item.icon}</div>
+                <div style={{ fontSize: '12px', fontWeight: 800, color: item.color, marginBottom: '6px' }}>{item.title}</div>
+                <div style={{ fontSize: '11px', color: '#475569', lineHeight: 1.6 }}>{item.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: '16px', background: '#0f172a', borderRadius: '10px', padding: '14px 20px', color: 'white' }}>
+            <div style={{ fontSize: '12px', fontWeight: 700, color: '#7dd3fc', marginBottom: '4px' }}>🎯 이랜드패션 맥락 시사점</div>
+            <p style={{ fontSize: '12px', color: '#cbd5e1', lineHeight: 1.7, margin: 0 }}>
+              동아시아 평균 18% 적극몰입 대비 이랜드패션의 현재 몰입도 수준을 측정하고, 동아시아 핵심 이슈인
+              <strong style={{ color: '#7dd3fc' }}> 고독감·저웰빙·관리자 격차</strong> 해소에 집중하면
+              단기간에 의미 있는 몰입도 향상이 가능합니다.
+              Q12 개선은 곧 이직률 감소 + 생산성 향상 + 매출목표 달성률 향상으로 이어집니다.
+            </p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── 섹션 6: 핵심 드라이버 ────────────────────────────────── */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.2 }}>
         <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px 28px' }}>
           <div style={{ fontSize: '11px', color: '#8b5cf6', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '6px' }}>

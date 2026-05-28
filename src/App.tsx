@@ -31,7 +31,7 @@ export default function App() {
             </div>
             <div>
               <h1 className="text-sm font-bold tracking-tight text-neutral-900 md:text-base">
-                Gallup Q12 몰입도 진단 시스템
+                Q12 몰입도 진단 시스템
               </h1>
               <p className="hidden text-[10px] font-medium text-neutral-400 font-mono sm:block">
                 Employee Engagement Index & Diagnostics
@@ -113,10 +113,10 @@ export default function App() {
       {/* Corporate Footnote */}
       <footer className="mx-auto max-w-5xl mt-12 px-4 text-center border-t border-neutral-200/50 pt-6 text-[10px] text-neutral-400 font-sans leading-relaxed">
         <p>
-          주식회사 조직문화혁신센터 | 갤럽 Q12(Gallup Q12)는 Gallup, Inc.의 등록 및 독점 자산에 기반한 조직 정렬 지표입니다.
+          주식회사 조직문화혁신센터 | Q12 몰입도 진단은 검증된 12문항 기반의 조직 정렬 지표입니다.
         </p>
         <p className="mt-1 font-mono">
-          © 2026 Gallup Q12 Enterprise Engagement Dashboard. All Rights Reserved. Securing Anonymity and Privacy.
+          © 2026 Q12 Enterprise Engagement Dashboard. All Rights Reserved. Securing Anonymity and Privacy.
         </p>
       </footer>
     </div>

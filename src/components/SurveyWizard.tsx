@@ -227,7 +227,7 @@ export default function SurveyWizard({ onSurveySubmitted }: SurveyWizardProps) {
               </span>
               <div>
                 <h1 className="text-xl font-bold text-neutral-900 leading-tight">이랜드패션 조직 몰입도 진단 (Q20)</h1>
-                <p className="text-xs text-neutral-400 font-mono tracking-tight font-bold uppercase">Gallup Q12 + Core Values Assessment</p>
+                <p className="text-xs text-neutral-400 font-mono tracking-tight font-bold uppercase">Q12 + Core Values Assessment</p>
               </div>
             </div>
 
